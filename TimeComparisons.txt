@@ -1,0 +1,42 @@
+Time comparisions RxJava
+
+Size : 200001
+Time Taken RX1: 90
+Time Taken RX2: 0
+Time Taken Async: 91
+Time Taken Sync1: 16
+Time Taken Sync2: 2
+
+
+Size : 200001
+Time Taken RX1: 58
+Time Taken RX2: 1
+Time Taken Async: 108
+Time Taken Sync1: 1756
+Time Taken Sync2: 605
+
+
+Size : 200001
+Time Taken RX1: 280
+Time Taken RX2: 0
+Time Taken RX3: 0
+Time Taken Async: 297
+Time Taken Sync1: 2052
+Time Taken Sync2: 617
+
+Size : 200001
+Time Taken RX1: 64
+Time Taken RX2: 0
+Time Taken RX3: 0
+Time Taken Async: 92
+Time Taken Sync1: 2354
+Time Taken Sync2: 972
+
+Size : 200001
+Time Taken RX1: 63
+Time Taken RX2: 0
+Time Taken RX3: 1
+Time Taken Async: 109
+Time Taken Sync1: 1573
+Time Taken Sync2: 914
+
