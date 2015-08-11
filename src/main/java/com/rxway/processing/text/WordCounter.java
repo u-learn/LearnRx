@@ -1,11 +1,12 @@
 package com.rxway.processing.text;
 
-import com.sun.deploy.util.StringUtils;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.*;
+import rx.functions.Action2;
+import rx.functions.Func0;
+import rx.functions.Func1;
 import rx.observables.StringObservable;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class WordCounter {
 	}
 
 	public void processFile(String path){
-		final String[] ovels = new String[]{"a","e","i","o","u"};
+		final String[] vowels = new String[]{"a","e","i","o","u"};
 		String str = parseFile(path);
 
 		if(str != null)
@@ -44,45 +45,45 @@ public class WordCounter {
 				return processed;
 			}
 		}, new Action2<HashMap<String, Object>, String[]>() {
-			public void call(HashMap<String, Object> o, String[] words) {
+			public void call(HashMap<String, Object> o, String[] tokens) {
 
 				HashMap<String, Object> facets = (HashMap<String, Object>) o.get("facets");
 				HashMap<String, Object> stats = (HashMap<String, Object>) o.get("stats");
 
-				for (String word : words) {
+				for (String token : tokens) {
 
-					if (!facets.containsKey(word)) {
-						facets.put(word, 1);
+					if (!facets.containsKey(token)) {
+						facets.put(token, 1);
 					} else {
-						int c = Integer.parseInt(facets.get(word).toString());
-						facets.put(word, ++c);
+						int c = Integer.parseInt(facets.get(token).toString());
+						facets.put(token, ++c);
 					}
 
 					if (!stats.containsKey("smallestWord")) {
-						stats.put("smallestWord", word);
-						stats.put("biggestWord", word);
+						stats.put("smallestWord", token);
+						stats.put("biggestWord", token);
 					} else {
 
 						String smallest = stats.get("smallestWord").toString();
 						String biggest = stats.get("biggestWord").toString();
 
-						stats.put("smallestWord", smallest.length() < word.length() ? smallest : word);
-						stats.put("biggestWord", biggest.length() > word.length() ? biggest : word);
+						stats.put("smallestWord", smallest.length() < token.length() ? smallest : token);
+						stats.put("biggestWord", biggest.length() > token.length() ? biggest : token);
 
 					}
 
-					if (!stats.containsKey("ovels")) {
-						stats.put("ovels", new HashMap<String, Integer>());
+					if (!stats.containsKey("vowels")) {
+						stats.put("vowels", new HashMap<String, Integer>());
 					}
 					try {
-						for (String ovel : ovels) {
-							HashMap<String, Integer> ovelsMap = (HashMap<String, Integer>) stats.get("ovels");
-							if (word.length() >0 && ovel.equalsIgnoreCase(word.charAt(0) + "")) {
-								if (ovelsMap.containsKey(ovel)) {
-									Integer c = ovelsMap.get(ovel);
-									ovelsMap.put(ovel, ++c);
+						for (String vowel : vowels) {
+							HashMap<String, Integer> vowelsMap = (HashMap<String, Integer>) stats.get("vowels");
+							if (token.length() >0 && vowel.equalsIgnoreCase(token.charAt(0) + "")) {
+								if (vowelsMap.containsKey(vowel)) {
+									Integer c = vowelsMap.get(vowel);
+									vowelsMap.put(vowel, ++c);
 								} else {
-									ovelsMap.put(ovel, 1);
+									vowelsMap.put(vowel, 1);
 								}
 							}
 						}
