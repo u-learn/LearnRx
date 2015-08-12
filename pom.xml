@@ -58,6 +58,13 @@
             <version>1.8.5</version>
         </dependency>
 
+        <!-- One of the example I have used gson, so Had to add jackson & gson, tobe refactored later-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+
 
     </dependencies>
 </project>
