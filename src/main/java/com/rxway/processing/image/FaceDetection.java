@@ -128,10 +128,11 @@ public class FaceDetection {
 			List<CLMDetectedFace> faces = det3.detectFaces(img);
 
 			map.put("original", another.getPath());
-			map.put("processed", detected.getPath());
 
 			if (faces.size() > 0) {
 
+				map.put("processed", detected.getPath());
+				
 				CLMDetectedFace face3 = faces.get(0);
 				mbf.drawShape(face3.getBounds(), 1, RGBColour.WHITE);
 
