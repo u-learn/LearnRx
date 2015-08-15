@@ -30,7 +30,7 @@ import java.util.Map;
 public class FaceDetection {
 
 	public static void main(String[] args){
-		new FaceDetection().processImages("sunand padmanabhan");
+		new FaceDetection().processImages("Jagadeesh Kumar Siripurapu");
 
 		/*try {
 			System.in.read();
@@ -63,45 +63,47 @@ public class FaceDetection {
 		JsonArray result = loadImagesSearchResult(keyWord);
 
 		List<Map<String, Object>> maps = null;
-		maps = Observable.from(result).flatMap(new Func1<JsonElement, Observable<File>>() {
+		maps = Observable.from(result)
 
-			public Observable<File> call(JsonElement element) {
+				.flatMap(new Func1<JsonElement, Observable<File>>() {
 
-				String url = ((JsonObject) element).get("tbUrl").getAsString();
-				String name = ((JsonObject) element).get("unescapedUrl").getAsString();
-				String[] chunks = name.split("/");
-				name = chunks[chunks.length - 1];
+					public Observable<File> call(JsonElement element) {
 
-				return Async.toAsync(new FuncN<File>() {
-					public File call(Object... args) {
-						return loadImage((String) args[0], (String) args[1]);
+						String url = ((JsonObject) element).get("tbUrl").getAsString();
+						String name = ((JsonObject) element).get("unescapedUrl").getAsString();
+						String[] chunks = name.split("/");
+						name = chunks[chunks.length - 1];
+
+						return Async.toAsync(new FuncN<File>() {
+							public File call(Object... args) {
+								return loadImage((String) args[0], (String) args[1]);
+							}
+						}).call(url, name);
+
 					}
-				}).call(url, name);
+				}).flatMap(new Func1<File, Observable<Map<String, Object>>>() {
 
-			}
-		}).flatMap(new Func1<File, Observable<Map<String, Object>>>() {
+					public Observable<Map<String, Object>> call(File file) {
 
-			public Observable<Map<String, Object>> call(File file) {
-
-				if(file.exists()) {
-					return Async.toAsync(new FuncN<Map<String, Object>>() {
-						public Map<String, Object> call(Object... args) {
-							return detectFaces((File) args[0]);
+						if(file.exists()) {
+							return Async.toAsync(new FuncN<Map<String, Object>>() {
+								public Map<String, Object> call(Object... args) {
+									return detectFaces((File) args[0]);
+								}
+							}).call(file);
+						}else{
+							return null;
 						}
-					}).call(file);
-				}else{
-					return null;
-				}
 
-			}
-		}).toList().toBlocking().single();
+					}
+				}).toList().toBlocking().single();
 						/*.subscribe(new Action1<List<Map<String, Object>>>() {
 					public void call(List<Map<String, Object>> maps) {
 						System.out.println(new Gson().toJson(maps));
 					}
 				});*/
 
-						System.out.println(new Gson().toJson(maps));
+				System.out.println(new Gson().toJson(maps));
 
 
 	}
@@ -132,7 +134,7 @@ public class FaceDetection {
 			if (faces.size() > 0) {
 
 				map.put("processed", detected.getPath());
-				
+
 				CLMDetectedFace face3 = faces.get(0);
 				mbf.drawShape(face3.getBounds(), 1, RGBColour.WHITE);
 
