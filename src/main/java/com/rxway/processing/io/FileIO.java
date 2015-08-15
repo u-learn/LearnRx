@@ -1,4 +1,4 @@
-package com.rxway.processing.async;
+package com.rxway.processing.io;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -11,18 +11,17 @@ import rx.functions.*;
 import rx.util.async.Async;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by bobby on 12/08/15.
  */
-public class AsyncProcessing {
+public class FileIO {
 
 	public static void main(String[] args){
 
 		try {
-			new AsyncProcessing().loadScrips();
+			new FileIO().loadScrips();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -72,6 +71,51 @@ public class AsyncProcessing {
 		//return;
 
 		Observable<JsonElement> observable = Observable.from(ja);
+
+		final long start = System.currentTimeMillis();
+		observable.doOnNext(new Action1<JsonElement>() {
+			public void call(JsonElement element) {
+
+				try {
+					JsonObject o = (element).getAsJsonObject();
+					boolean active = o.get("status").getAsString().trim().equalsIgnoreCase("active");
+					boolean yahooReady = o.get("yahooReady").getAsString().trim().equalsIgnoreCase("true");
+					String scid = o.getAsJsonObject().get("scid").getAsString();
+
+					if (active && yahooReady) {
+						//System.out.println(Thread.currentThread().getId());
+							if (scid.charAt(0) == 'z' || scid.charAt(0) == 'Z') {
+								//throw (new RuntimeException("System doesnt like z"));
+							} else {
+								FileWriter writer = new FileWriter(new File("./src/main/resources/plain/" + scid + ".json"));
+								writer.write(o.toString());
+								writer.flush();
+								writer.close();
+							}
+
+						}
+
+					}catch(IOException e){
+						e.printStackTrace();
+					}
+
+				}
+			}).subscribe(new Subscriber<JsonElement>() {
+
+			public void onCompleted() {
+				System.out.println("Plain Took " + (System.currentTimeMillis() - start) + "ms");
+			}
+
+
+			public void onError(Throwable e) {
+
+			}
+
+
+			public void onNext(JsonElement element) {
+
+			}
+		});
 
 		final long asyncStart = System.currentTimeMillis();
 		observable.flatMap(new Func1<JsonElement, Observable<Boolean>>() {
@@ -184,57 +228,18 @@ public class AsyncProcessing {
 			}
 		});
 
-		final long start = System.currentTimeMillis();
-		observable.doOnNext(new Action1<JsonElement>() {
-			public void call(JsonElement element) {
 
-				try {
-					JsonObject o = (element).getAsJsonObject();
-					boolean active = o.get("status").getAsString().trim().equalsIgnoreCase("active");
-					boolean yahooReady = o.get("yahooReady").getAsString().trim().equalsIgnoreCase("true");
-
-					if (active && yahooReady) {
-						//System.out.println(Thread.currentThread().getId());
-						FileWriter writer = new FileWriter(new File("./src/main/resources/plain/" + (o.getAsJsonObject().get("scid").getAsString()) + ".json"));
-						writer.write(o.toString());
-						writer.flush();
-						writer.close();
-					}
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-			}
-		}).subscribe(new Subscriber<JsonElement>() {
-
-			public void onCompleted() {
-				System.out.println("Plain Took " + (System.currentTimeMillis() - start) + "ms");
-			}
-
-
-			public void onError(Throwable e) {
-
-			}
-
-
-			public void onNext(JsonElement element) {
-
-			}
-		});
-
-		/*
 		//Stop the main thread from exiting, (Observable.toBlocking().single() also can be used)
 		try {
 			System.out.println("\n---------------\nPRESS ENTER IN CONSOLE TO EXIT THE PROCESS.\n---------------\n");
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 
 		try {
 
-			//REMOVING THE CREATED TEMP FILES
+			System.out.println("REMOVING THE CREATED TEMP FILES");
 			FileUtils.deleteDirectory(new File("./src/main/resources/async"));
 			FileUtils.deleteDirectory(new File("./src/main/resources/plain"));
 
