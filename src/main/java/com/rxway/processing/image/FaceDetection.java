@@ -14,6 +14,8 @@ import org.openimaj.image.processing.face.detection.CLMDetectedFace;
 import org.openimaj.image.processing.face.detection.CLMFaceDetector;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.FuncN;
 import rx.util.async.Async;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +33,29 @@ import java.util.Map;
 public class FaceDetection {
 
 	public static void main(String[] args){
-		new FaceDetection().processImages("Jagadeesh Kumar Siripurapu");
 
-		/*try {
+		try {
+
+			new FaceDetection().processImagesAsync("Jagadeesh Kumar Siripurapu");
+			Thread.sleep(3000);
+
+			new FaceDetection().processImagesAsync("Jagadeesh Kumar Siripurapu");
+			Thread.sleep(3000);
+
+			new FaceDetection().processImagesAsync("Jagadeesh Kumar Siripurapu");
+			Thread.sleep(3000);
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		//new FaceDetection().processImagesSync("Jagadeesh Kumar Siripurapu");
+
+		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private File loadImage(String url, String name){
@@ -58,12 +77,16 @@ public class FaceDetection {
 
 	}
 
-	public void processImages(String keyWord){
+	public void processImagesAsync(String keyWord){
 
 		JsonArray result = loadImagesSearchResult(keyWord);
 
-		List<Map<String, Object>> maps = null;
-		maps = Observable.from(result)
+		//start is being counted only after first images result is avaialble
+		final long start = System.currentTimeMillis();
+
+		//List<Map<String, Object>> maps = null;
+		//maps =
+				Observable.from(result)
 
 				.flatMap(new Func1<JsonElement, Observable<File>>() {
 
@@ -96,14 +119,22 @@ public class FaceDetection {
 						}
 
 					}
-				}).toList().toBlocking().single();
-						/*.subscribe(new Action1<List<Map<String, Object>>>() {
-					public void call(List<Map<String, Object>> maps) {
-						System.out.println(new Gson().toJson(maps));
+				}).toList()//.toBlocking().single();
+				.subscribe(new Subscriber<List<Map<String, Object>>>() {
+					public void onCompleted() {
+						System.out.println("Async took " + (System.currentTimeMillis()-start) + "ms");
 					}
-				});*/
 
-				System.out.println(new Gson().toJson(maps));
+					public void onError(Throwable throwable) {
+
+					}
+
+					public void onNext(List<Map<String, Object>> maps) {
+
+					}
+				});
+
+
 
 
 	}
@@ -199,6 +230,36 @@ public class FaceDetection {
 		}
 
 		return result;
+
+	}
+
+	public void processImagesSync(String keyWord){
+
+		JsonArray result = loadImagesSearchResult(keyWord);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+		//start is being counted only after first images result is avaialble
+		long start =  System.currentTimeMillis();
+
+		for(JsonElement element:result){
+
+			String url = ((JsonObject) element).get("tbUrl").getAsString();
+			String name = ((JsonObject) element).get("unescapedUrl").getAsString();
+			String[] chunks = name.split("/");
+			name = chunks[chunks.length - 1];
+
+			File file = loadImage(url, name);
+
+			if(file.exists()) {
+				Map<String, Object> map = detectFaces(file);
+				list.add(map);
+			}
+
+		}
+
+		System.out.println("Sync took " + (System.currentTimeMillis()-start) + "ms");
+
+
 
 	}
 

@@ -1,0 +1,157 @@
+SYNC
+++++++++++++
+
+itr 1
+-----
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Sync took 7101ms
+
+itr 2
+-----
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Sync took 5001ms
+
+itr 3
+-----
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Sync took 5048ms
+
+
+
+ASYNC (Restarted IDE to remove caches)
+++++++++++++
+
+itr 1
+-----
+Loading images on thread 11
+Loading images on thread 9
+Loading images on thread 10
+Detecting faces on thread 12
+Detecting faces on thread 9
+Detecting faces on thread 10
+Loading images on thread 11
+Detecting faces on thread 11
+Async took 6458ms
+
+itr 2
+-----
+Loading images on thread 11
+Loading images on thread 9
+Loading images on thread 10
+Detecting faces on thread 12
+Loading images on thread 11
+Detecting faces on thread 10
+Detecting faces on thread 9
+Detecting faces on thread 11
+Async took 4828ms
+
+
+itr 3
+-----
+Loading images on thread 11
+Loading images on thread 9
+Loading images on thread 10
+Loading images on thread 11
+Detecting faces on thread 12
+Detecting faces on thread 9
+Detecting faces on thread 10
+Detecting faces on thread 11
+Async took 5170ms
+
+
+----------------------------
+3 Back to Back calls
+----------------------------
+
+SYNC
+++++++++++++
+
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Sync took 4571ms
+
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Sync took 1359ms
+
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Loading images on thread 1
+Detecting faces on thread 1
+Sync took 1320ms
+
+
+ASYNC 
+++++++++++++
+
+Loading images on thread 11
+Loading images on thread 9
+Loading images on thread 10
+Detecting faces on thread 12
+Loading images on thread 11
+Detecting faces on thread 9
+Detecting faces on thread 10
+Detecting faces on thread 11
+Loading images on thread 9
+Loading images on thread 11
+Loading images on thread 12
+Async took 4498ms
+
+
+Loading images on thread 10
+Detecting faces on thread 9
+Detecting faces on thread 12
+Detecting faces on thread 10
+Detecting faces on thread 11
+Async took 2940ms
+
+
+Loading images on thread 12
+Loading images on thread 9
+Loading images on thread 10
+Loading images on thread 11
+Detecting faces on thread 9
+Detecting faces on thread 10
+Detecting faces on thread 12
+Detecting faces on thread 11
+Async took 717ms
+
+
+
